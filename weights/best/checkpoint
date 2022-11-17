@@ -1,0 +1,2 @@
+model_checkpoint_path: "bayesian_CNN_flipout_layers"
+all_model_checkpoint_paths: "bayesian_CNN_flipout_layers"
