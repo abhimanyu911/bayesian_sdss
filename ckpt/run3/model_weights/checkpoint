@@ -1,2 +1,0 @@
-model_checkpoint_path: "bayesian_CNN_flipout_layers_lr_1E-3_epochs_100_classes_3"
-all_model_checkpoint_paths: "bayesian_CNN_flipout_layers_lr_1E-3_epochs_100_classes_3"
