@@ -31,11 +31,26 @@ pip install -r requirements.txt
 4. The Frequentist CNN is confident in its prediction regardless of the class (fig 3 and 4) which is not desirable.
 
 
+**Figure 1**
+
+
 ![**Figure 1**](./fig1.png)
+
+
+**Figure 2**
+
 
 ![**Figure 2**](./fig2.png)
 
+
+**Figure 3**
+
+
 ![**Figure 3**](./fig3.png)
+
+
+**Figure 4**
+
 
 ![**Figure 4**](./fig4.png)
 
