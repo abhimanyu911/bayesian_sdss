@@ -38,6 +38,7 @@ weights_dir = {
     'frequentist' : './checkpoints/freq_logs/best' , 
     'bayesian' : './checkpoints/baye_logs/best'
 }
+ensemble_size = 100
 
 def remove_specific_class(images = None, labels = None, class_label = None):
     """
@@ -71,6 +72,84 @@ def convert_to_categorical(labels = None):
             one_hot_vector[int(label)] = 1
             one_hot_labels.append(one_hot_vector)
         return np.array(one_hot_labels).astype('float32')
+
+
+def get_ensembled_classification_report(X_test = None, y_test = None, ensemble_size = None, model = None, threshold = None):
+    """
+    Returns the classification report of the ensembled model.
+    """
+    if X_test is None or y_test is None or ensemble_size is None or model is None or threshold is None:
+        raise ValueError("X_test, y_test, ensemble_size and model must be provided.")
+    else:
+        # Get the predictions of the ensemble
+        predicted_probabilities = np.zeros((X_test.shape[0], 9))
+        for i in range(ensemble_size):
+            predicted_probabilities += model.predict(X_test)
+        predicted_probabilities /= ensemble_size
+        classified_sample_predictions = []
+        classified_sample_labels = []
+        for i in range(X_test.shape[0]):
+            if np.max(predicted_probabilities[i]) > threshold:
+                classified_sample_predictions.append(np.argmax(predicted_probabilities[i]))
+                classified_sample_labels.append(np.argmax(y_test[i]))
+        
+        samples_classified = len(classified_sample_predictions)/X_test.shape[0]*100
+
+        return samples_classified, metrics.classification_report(classified_sample_labels, classified_sample_predictions)
+           
+def plot_sample_with_confidence(sample_index=None, X_test=None, y_test=None, ensemble_size=None, mode=None, style = None, model = None):
+    # Get the sample image and true label
+    sample_image = X_test[sample_index]
+    if mode is None:
+        true_label = np.argmax(y_test[sample_index])
+        #if true_label > 5:
+         #   true_label += 1
+    else:
+        true_label = y_test[sample_index]
+    # Initialize an array to store the predicted probabilities for each class
+    predicted_probabilities = np.zeros((ensemble_size, 9))
+    # Make predictions using each Bayesian network
+    for i in range(ensemble_size):
+        predicted_probabilities[i] = model.predict(sample_image.reshape(1, 69, 69, 3))
+    pct_2p5 = np.array([np.percentile(predicted_probabilities[:, i], 2.5) for i in range(9)])
+    pct_97p5 = np.array([np.percentile(predicted_probabilities[:, i], 97.5) for i in range(9)])
+    bar_height = pct_97p5 - pct_2p5
+    # Calculate the mean probabilities for each class
+    mean_probabilities = np.mean(predicted_probabilities, axis=0)
+    # Create a bar chart with the mean probabilities and confidence intervals
+    fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(10, 4), gridspec_kw={'width_ratios': [2, 4]})
+    ax1.imshow(sample_image)
+    ax1.axis('off')
+    if mode is None:
+        ax1.set_title(f'True label: {true_label}')
+    else:
+        ax1.set_title(f'Unseen class')
+    x = np.arange(9)
+    colours = 'green'
+    if style == 'bar':
+        bars = ax2.bar(x, bottom=pct_2p5, height=bar_height, width=0.8, color=colours, alpha=0.5)
+        for i, bar in enumerate(bars):
+            bar_x = bar.get_x()
+            bar_width = bar.get_width()
+            bar_height = bar.get_height()
+            mean_probability = mean_probabilities[i]
+            
+            if mean_probability > 0.02:
+                ax2.plot([bar_x, bar_x + bar_width],
+                         [mean_probability, mean_probability],
+                         color='black', linestyle='dashed')
+                ax2.text(bar_x + bar_width, mean_probability, f'{mean_probability:.2f}', verticalalignment='center')
+            ax2.legend(['Mean Probability'])
+            
+    ax2.set_xticks(x, ['0', '1', '2', ' 3', '4', '5', '6', '7', '8'])
+    ax2.set_ylim([0, 1.05])
+    ax2.set_xlabel('Classes')
+    ax2.set_ylabel('Probability')
+    if style == 'bar':
+        ax2.set_title('Sample Classification with 95% CI')
+    plt.show()
+
+
 
 def create_hdf5_file(images = None, labels = None, mode = None):
     """
