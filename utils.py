@@ -28,6 +28,7 @@ import json
 tfd = tfp.distributions
 tfpl = tfp.layers
 
+
 total_samples = 21768
 train_samples = floor(total_samples*0.7)
 val_samples = ceil(total_samples*0.15)
@@ -117,13 +118,15 @@ def plot_sample_with_confidence(sample_index=None, X_test=None, y_test=None, ens
     # Calculate the mean probabilities for each class
     mean_probabilities = np.mean(predicted_probabilities, axis=0)
     # Create a bar chart with the mean probabilities and confidence intervals
-    fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(10, 4), gridspec_kw={'width_ratios': [2, 4]})
+    fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(10, 4), gridspec_kw={'width_ratios': [3, 3]})
     ax1.imshow(sample_image)
     ax1.axis('off')
     if mode is None:
+        plt.rcParams['axes.titlesize'] = 10
         ax1.set_title(f'True label: {true_label}')
     else:
-        ax1.set_title(f'Unseen class')
+        plt.rcParams['axes.titlesize'] = 10
+        ax1.set_title(f'Disk, Edge-on, Boxy Bulge(Lies outside the training set)')
     x = np.arange(9)
     colours = 'green'
     if style == 'bar':
@@ -146,6 +149,7 @@ def plot_sample_with_confidence(sample_index=None, X_test=None, y_test=None, ens
     ax2.set_xlabel('Classes')
     ax2.set_ylabel('Probability')
     if style == 'bar':
+        plt.rcParams['axes.titlesize'] = 10
         ax2.set_title('Sample Classification with 95% CI')
     plt.show()
 

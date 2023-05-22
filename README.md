@@ -31,30 +31,29 @@ pip install -r requirements.txt
 4. The Frequentist CNN is confident in its prediction regardless of the class (fig 3 and 4) which is not desirable.
 
 
-
-
-**Figure 1(Bayesian)**
-
-
 ![**Figure 1**](./fig1.png)
-
-
-**Figure 2(Bayesian: unseen class)**
-
 
 ![**Figure 2**](./fig2.png)
 
-
-**Figure 3(Frequentist)**
-
-
 ![**Figure 3**](./fig3.png)
 
-
-**Figure 4(Frequentist: unseen class)**
-
-
 ![**Figure 4**](./fig4.png)
+
+
+# Model architectures
+
+
+## Frequentist CNN
+
+
+![**Figure 5**](./frequentist.png)
+
+
+## Bayesian CNN
+
+
+![**Figure 6**](./bayesian.png)
+
 
 
 # Note
