@@ -97,7 +97,37 @@ def get_ensembled_classification_report(X_test = None, y_test = None, ensemble_s
         samples_classified = len(classified_sample_predictions)/X_test.shape[0]*100
 
         return samples_classified, metrics.classification_report(classified_sample_labels, classified_sample_predictions)
-           
+
+
+def get_ensembled_entropy_report(X_test = None, y_test = None, ensemble_size = None, model = None, threshold = None):
+    """
+    Returns the entropy report of the ensembled model.
+    """
+    if X_test is None or y_test is None or ensemble_size is None or model is None or threshold is None:
+        raise ValueError("X_test, y_test, ensemble_size and model must be provided.")
+    else:
+        # Get the predictions of the ensemble
+        mean_predicted_probabilities = np.zeros((X_test.shape[0], 9))
+        entropies = np.zeros((X_test.shape[0], 1))
+        for i in range(ensemble_size):
+            predicted_probabilities = model.predict(X_test)
+            mean_predicted_probabilities += predicted_probabilities
+            entropies += np.expand_dims(-np.sum(predicted_probabilities * np.log2(predicted_probabilities), axis = 1), axis = 1)
+        entropies /= ensemble_size
+        mean_predicted_probabilities /= ensemble_size
+        classified_sample_predictions = []
+        classified_sample_labels = []
+        for i in range(X_test.shape[0]):
+            if entropies[i] < threshold:
+                classified_sample_predictions.append(np.argmax(mean_predicted_probabilities[i]))
+                classified_sample_labels.append(np.argmax(y_test[i]))
+        
+        samples_classified = len(classified_sample_predictions)/X_test.shape[0]*100
+
+        return samples_classified, metrics.classification_report(classified_sample_labels, classified_sample_predictions)
+
+
+
 def plot_sample_with_confidence(sample_index=None, X_test=None, y_test=None, ensemble_size=None, mode=None, style = None, model = None):
     # Get the sample image and true label
     sample_image = X_test[sample_index]
