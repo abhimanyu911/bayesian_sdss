@@ -168,7 +168,8 @@ def plot_sample_with_confidence(sample_index=None, X_test=None, y_test=None, ens
     if style == 'bayesian':
         bars_bayes = ax2.bar(x, bottom=pct_2p5, height=bar_height, width=0.8, color=colours, alpha=0.5)
     else:
-        bars_freq  = ax2.bar(x, bottom=0, height = mean_probabilities, width = 0.8, color = colours, alpha = 0.5)
+        #bars_freq  = ax2.bar(x, bottom=0, height = mean_probabilities, width = 0.8, color = colours, alpha = 0.5)
+        scatter_freq = ax2.scatter(x, mean_probabilities, color='red', alpha=0.5)
     if style == 'bayesian':
         for i, bar in enumerate(bars_bayes):
             bar_x = bar.get_x()
@@ -196,14 +197,16 @@ def plot_sample_with_confidence(sample_index=None, X_test=None, y_test=None, ens
         ax2.legend(['Mean Probability', '2.5th percentile', '97.5th percentile'])
         ax2.text(0.05, 0.95, f'Mean Entropy: {mean_entropy:.2f}', transform=ax2.transAxes, bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.3'))
     else:
-        for i, bar in enumerate(bars_freq):
+        '''for i, bar in enumerate(bars_freq):
             bar_x = bar.get_x()
             bar_width = bar.get_width()
             bar_height = bar.get_height()
             mean_probability = mean_probabilities[i]
 
             if mean_probability>0.005:
-                ax2.text(bar_x+bar_width/10, mean_probability+0.015, f'{mean_probability:.2f}', verticalalignment='center')
+                ax2.text(bar_x+bar_width/10, mean_probability+0.015, f'{mean_probability:.2f}', verticalalignment='center')'''
+        for i, prob in enumerate(mean_probabilities):
+            ax2.text(x[i], prob+0.0075, f'{prob:.2f}', ha='center', va='bottom')
             
     ax2.set_xticks(x, ['0', '1', '2', ' 3', '4', '5', '6', '7', '8'])
     ax2.set_ylim([0, 1.05])
