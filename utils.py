@@ -150,7 +150,7 @@ def plot_sample_with_confidence(sample_index=None, X_test=None, y_test=None, ens
     # Calculate the mean probabilities for each class
     mean_probabilities = np.mean(predicted_probabilities, axis=0)
     # Create a bar chart with the mean probabilities and confidence intervals
-    fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(10, 5), gridspec_kw={'width_ratios': [2, 8]})
+    fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2, figsize=(10, 5), gridspec_kw={'width_ratios': [10, 18]})
     ax1.imshow(sample_image)
     ax1.axis('off')
     if mode is None:
@@ -188,9 +188,9 @@ def plot_sample_with_confidence(sample_index=None, X_test=None, y_test=None, ens
                 ax2.plot([bar_x, bar_x + bar_width],
                          [pct_97p5_i, pct_97p5_i],
                          color = 'blue', linestyle = 'solid')
-                ax2.text(bar_x + bar_width, mean_probability, f'{mean_probability:.2f}', verticalalignment='center')
-                ax2.text(bar_x-bar_width+0.25, pct_2p5_i,f'{pct_2p5_i:.2f}', verticalalignment='center')
-                ax2.text(bar_x-bar_width+0.25, pct_97p5_i,f'{pct_97p5_i:.2f}', verticalalignment='center')
+                ax2.text(bar_x + bar_width, mean_probability, f'{mean_probability:.2f}', verticalalignment='center', fontsize = 8)
+                ax2.text(bar_x-bar_width+0.25, pct_2p5_i,f'{pct_2p5_i:.2f}', verticalalignment='center', fontsize = 8)
+                ax2.text(bar_x-bar_width+0.25, pct_97p5_i,f'{pct_97p5_i:.2f}', verticalalignment='center', fontsize = 8)
         
             
         ax2.legend(['Mean Probability', '2.5th percentile', '97.5th percentile'])
@@ -203,7 +203,7 @@ def plot_sample_with_confidence(sample_index=None, X_test=None, y_test=None, ens
             mean_probability = mean_probabilities[i]
 
             if mean_probability>0.005:
-                ax2.text(bar_x+bar_width/6, mean_probability+0.015, f'{mean_probability:.2f}', verticalalignment='center')
+                ax2.text(bar_x+bar_width/10, mean_probability+0.015, f'{mean_probability:.2f}', verticalalignment='center')
             
     ax2.set_xticks(x, ['0', '1', '2', ' 3', '4', '5', '6', '7', '8'])
     ax2.set_ylim([0, 1.05])
@@ -211,9 +211,9 @@ def plot_sample_with_confidence(sample_index=None, X_test=None, y_test=None, ens
     ax2.set_ylabel('Probability')
     plt.rcParams['axes.titlesize'] = 10
     if style == 'bayesian':
-        ax2.set_title('Sample Classification with 95% CI')
+        ax2.set_title('Sample Classification with 95% CI(Bayesian)')
     else:
-        ax2.set_title('Sample Classification (Frequentist)')
+        ax2.set_title('Sample Classification(Frequentist)')
     plt.show()
 
 
